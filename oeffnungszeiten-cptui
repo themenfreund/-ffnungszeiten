@@ -1,0 +1,195 @@
+function cptui_register_my_cpts_oeffnungszeiten() {
+
+	/**
+	 * Post Type: Öffnungszeiten.
+	 */
+
+	$labels = [
+		"name" => __( "Öffnungszeiten", "custom-post-type-ui" ),
+		"singular_name" => __( "Öffnungszeit", "custom-post-type-ui" ),
+		"menu_name" => __( "Öffnungszeiten", "custom-post-type-ui" ),
+		"all_items" => __( "Alle Öffnungszeiten", "custom-post-type-ui" ),
+		"add_new" => __( "Neue Öffnungszeit", "custom-post-type-ui" ),
+		"add_new_item" => __( "Öffnungszeit bearbeiten", "custom-post-type-ui" ),
+		"edit_item" => __( "Öffnungszeit bearbeiten", "custom-post-type-ui" ),
+		"new_item" => __( "Neue Öffnungszeit", "custom-post-type-ui" ),
+		"view_item" => __( "Öffnungszeit anzeigen", "custom-post-type-ui" ),
+		"view_items" => __( "Öffnungszeiten anzeigen", "custom-post-type-ui" ),
+		"search_items" => __( "Öffnungszeit suchen", "custom-post-type-ui" ),
+		"not_found" => __( "Keine Öffnungszeit gefunden", "custom-post-type-ui" ),
+		"not_found_in_trash" => __( "Keine Öffnungszeit im Papierkorb gefunden", "custom-post-type-ui" ),
+		"insert_into_item" => __( "In Öffnungszeit hinzufügen", "custom-post-type-ui" ),
+		"filter_items_list" => __( "Öffnungszeiten filtern", "custom-post-type-ui" ),
+		"name_admin_bar" => __( "Neue Öffnungszeit", "custom-post-type-ui" ),
+		"item_published" => __( "Öffnungszeit veröffentlicht", "custom-post-type-ui" ),
+		"item_published_privately" => __( "Öffnungszeit privat veröffentlicht", "custom-post-type-ui" ),
+		"item_reverted_to_draft" => __( "Öffnungszeit Entwurf", "custom-post-type-ui" ),
+		"item_scheduled" => __( "Öffnungszeit geplant", "custom-post-type-ui" ),
+		"item_updated" => __( "Öffnungszeit aktualisiert", "custom-post-type-ui" ),
+	];
+
+	$args = [
+		"label" => __( "Öffnungszeiten", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"description" => "Öffnungszeiten der Behörden und Ämter",
+		"public" => true,
+		"publicly_queryable" => true,
+		"show_ui" => true,
+		"show_in_rest" => true,
+		"rest_base" => "",
+		"rest_controller_class" => "WP_REST_Posts_Controller",
+		"has_archive" => false,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"delete_with_user" => false,
+		"exclude_from_search" => false,
+		"capability_type" => "post",
+		"map_meta_cap" => true,
+		"hierarchical" => false,
+		"rewrite" => [ "slug" => "oeffnungszeiten", "with_front" => true ],
+		"query_var" => true,
+		"supports" => [ "title", "editor", "thumbnail", "custom-fields", "page-attributes" ],
+		"taxonomies" => [ "category", "post_tag" ],
+		"show_in_graphql" => false,
+	];
+
+	register_post_type( "oeffnungszeiten", $args );
+}
+
+add_action( 'init', 'cptui_register_my_cpts_oeffnungszeiten' );
+/---------------------------------------------/
+function cptui_register_my_taxes() {
+
+	/**
+	 * Taxonomy: Öffnungszeiten.
+	 */
+
+	$labels = [
+		"name" => __( "Öffnungszeiten", "custom-post-type-ui" ),
+		"singular_name" => __( "Öffnungszeit", "custom-post-type-ui" ),
+	];
+
+	
+	$args = [
+		"label" => __( "Öffnungszeiten", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"public" => true,
+		"publicly_queryable" => true,
+		"hierarchical" => false,
+		"show_ui" => true,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"query_var" => true,
+		"rewrite" => [ 'slug' => 'offnungszeiten', 'with_front' => true, ],
+		"show_admin_column" => false,
+		"show_in_rest" => true,
+		"show_tagcloud" => true,
+		"rest_base" => "offnungszeiten",
+		"rest_controller_class" => "WP_REST_Terms_Controller",
+		"show_in_quick_edit" => false,
+		"show_in_graphql" => false,
+	];
+	register_taxonomy( "offnungszeiten", [ "post", "oeffnungszeiten" ], $args );
+
+	/**
+	 * Taxonomy: Öffnungszeiten.
+	 */
+
+	$labels = [
+		"name" => __( "Öffnungszeiten", "custom-post-type-ui" ),
+		"singular_name" => __( "Öffnungszeit", "custom-post-type-ui" ),
+	];
+
+	
+	$args = [
+		"label" => __( "Öffnungszeiten", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"public" => true,
+		"publicly_queryable" => true,
+		"hierarchical" => false,
+		"show_ui" => true,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"query_var" => true,
+		"rewrite" => [ 'slug' => 'oeffnungszeiten', 'with_front' => true, ],
+		"show_admin_column" => false,
+		"show_in_rest" => true,
+		"show_tagcloud" => true,
+		"rest_base" => "oeffnungszeiten",
+		"rest_controller_class" => "WP_REST_Terms_Controller",
+		"show_in_quick_edit" => false,
+		"show_in_graphql" => false,
+	];
+	register_taxonomy( "oeffnungszeiten", [ "post" ], $args );
+}
+add_action( 'init', 'cptui_register_my_taxes' );
+/---------------------------------------------------------------/
+function cptui_register_my_taxes_offnungszeiten() {
+
+	/**
+	 * Taxonomy: Öffnungszeiten.
+	 */
+
+	$labels = [
+		"name" => __( "Öffnungszeiten", "custom-post-type-ui" ),
+		"singular_name" => __( "Öffnungszeit", "custom-post-type-ui" ),
+	];
+
+	
+	$args = [
+		"label" => __( "Öffnungszeiten", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"public" => true,
+		"publicly_queryable" => true,
+		"hierarchical" => false,
+		"show_ui" => true,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"query_var" => true,
+		"rewrite" => [ 'slug' => 'offnungszeiten', 'with_front' => true, ],
+		"show_admin_column" => false,
+		"show_in_rest" => true,
+		"show_tagcloud" => true,
+		"rest_base" => "offnungszeiten",
+		"rest_controller_class" => "WP_REST_Terms_Controller",
+		"show_in_quick_edit" => false,
+		"show_in_graphql" => false,
+	];
+	register_taxonomy( "offnungszeiten", [ "post", "oeffnungszeiten" ], $args );
+}
+add_action( 'init', 'cptui_register_my_taxes_offnungszeiten' );
+/-------------------------------------------------------------/
+function cptui_register_my_taxes_oeffnungszeiten() {
+
+	/**
+	 * Taxonomy: Öffnungszeiten.
+	 */
+
+	$labels = [
+		"name" => __( "Öffnungszeiten", "custom-post-type-ui" ),
+		"singular_name" => __( "Öffnungszeit", "custom-post-type-ui" ),
+	];
+
+	
+	$args = [
+		"label" => __( "Öffnungszeiten", "custom-post-type-ui" ),
+		"labels" => $labels,
+		"public" => true,
+		"publicly_queryable" => true,
+		"hierarchical" => false,
+		"show_ui" => true,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"query_var" => true,
+		"rewrite" => [ 'slug' => 'oeffnungszeiten', 'with_front' => true, ],
+		"show_admin_column" => false,
+		"show_in_rest" => true,
+		"show_tagcloud" => true,
+		"rest_base" => "oeffnungszeiten",
+		"rest_controller_class" => "WP_REST_Terms_Controller",
+		"show_in_quick_edit" => false,
+		"show_in_graphql" => false,
+	];
+	register_taxonomy( "oeffnungszeiten", [ "post" ], $args );
+}
+add_action( 'init', 'cptui_register_my_taxes_oeffnungszeiten' );
