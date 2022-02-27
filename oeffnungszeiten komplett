@@ -1,0 +1,279 @@
+function Oeffnungszeiten_Aemter() {	
+			
+			// Einzelne Felder in Arrays übergeben
+			
+			
+	if (is_singular('oeffnungszeiten-behoerden-und-aemter')) {
+		$behoerde = array('amt', 'strasse', 'plz', 'ort', 'telefonnummer', 'email', 'postfach', 'plz_postfach', 'fax', 'internet');
+		$oeffnungszeiten = array("geschlossen", "ganztags geschlossen");
+		$wochentage = array( 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag');
+		$momentanerWochentag = (int)date("N"); 
+
+		$behoerde[0] = get_field("amt");
+		$behoerde[1] = get_field("strasse");
+		$behoerde[2] = get_field("plz");
+		$behoerde[3] = get_field("ort");
+		$behoerde[4] = get_field("telefonnummer");
+		$behoerde[5] = get_field("email");
+		$behoerde[6] = get_field("postfach");
+		$behoerde[7] = get_field("plz_postfach");
+		$behoerde[8] = get_field("fax");
+		$behoerde[9] = get_field("internet");
+		
+		$info[0] = get_field("aktuell");
+		$info[1] = get_field("webseite");
+		$info[2] = get_field("zustaendigkeiten");
+		$info[3] = get_field("linktitel");
+		$info[4] = get_field("buchungsmail");
+		$info[5] = get_field("hinweise");
+		
+		// Ausgabe der einzelnen Felder
+		
+		echo '<meta data-name="name" itemprop="name" content="' . $behoerde[0] . '">' . $behoerde[0];
+		echo '<br /><br /><meta data-name="streetAddress" itemprop="streetAddress" content="' . $behoerde[1] . '">' . $behoerde[1];
+		echo '<br /><br /><meta data-name="postalCode" itemprop="postalCode" content="' . $behoerde[2] . '">' . $behoerde[2] . '<meta data-name="addressLocality" itemprop="addressLocality" content="' .$behoerde[3] . '" />' . ' ' .$behoerde[3];
+		
+		// Wenn Postfach eingetragen auch ausgeben
+		
+		if (!empty($behoerde[6])){
+		echo '<br /><br />Postfach ' . $behoerde[6];
+		echo '<br /><br />' . $behoerde[7] . ' ' .$behoerde[3];
+		}		
+		echo '<hr />';
+		echo '<br />&phone;:' . ' <meta data-name="telephone" itemprop="telephone" content="' .$behoerde[4] . '">' . $behoerde[4];
+		
+		// Wenn Faxnummer eingetragen erfolgt Ausgabe
+		
+		if (!empty($behoerde[8])){
+			echo '<br /><br />&#128439;:' . ' <meta data-name="fax" itemprop="fax" content="' .$behoerde[8] . '">' . $behoerde[8];
+		}
+	
+		// Wenn EMail-Adresse angegeben erfolgt Ausgabe
+	
+		if (!empty(behoerde[5])) {
+			echo '<br /><br />&#9993;: <a href="mailto:'.$behoerde[5] .'" title="EMail schreiben" ><meta data-name="email" itemprop="email" content="' . $behoerde[5] . '">' . $behoerde[5] . '</a>';
+		}
+		
+		// Webseite ausgeben, wenn eingetragen
+		
+		if (!empty(behoerde[9])) {
+			echo '<br /><br />&#127757;: <a href="https://'.$behoerde[9] .'" title="Webseite" ><meta data-name="website" itemprop="website" content="' . $behoerde[9] . '">' . $behoerde[9] . '</a>';
+		}
+		
+		echo '<hr />';
+		
+		// Feiertag (gesamter Feiertagscode by <a href="werner-zenk.de" title ="Feiteragscode by Werner-Zenk.de">Werner Zenk</a>
+		/*$jahr = date("Y");*/
+		function feiertag($tag, $monat, $jahr) {
+		$ausgabe = "";
+		foreach (feiertage($jahr) as $ftag => $zeitstempel) {
+			if ($zeitstempel == date("U", mktime(0, 0, 0, $monat, $tag, $jahr))) {
+				$ausgabe .= $ftag . '<br>';
+				}
+			}
+			return $ausgabe;
+		}
+
+	// Feiertage (gesetzliche- kirchliche- und Brauchtumstage)
+		function feiertage($jahr) {
+	// Die festen Feiertage
+			/*$jahr = date("Y");*/
+			$ftag["Neujahr"] = mktime(0, 0, 0, 1, 1, $jahr);
+			$ftag["Heilige 3 Könige"] = mktime(0, 0, 0, 1, 6, $jahr);
+			$ftag["Tag der Arbeit"] = mktime(0, 0, 0, 5, 1, $jahr);
+			$ftag["Tag der deutschen Einheit"] = mktime(0, 0, 0, 10, 3, $jahr);
+			$ftag["Reformationstag"] = mktime(0, 0, 0, 10, 31, $jahr);
+			$ftag["Heiligabend"] = mktime(0, 0, 0, 12, 24, $jahr);
+			$ftag["1. Weihnachtsfeiertag"] = mktime(0, 0, 0, 12, 25, $jahr);
+			$ftag["2. Weihnachtsfeiertag"] = mktime(0, 0, 0, 12, 26, $jahr);
+			$ftag["Silvester"] = mktime(0, 0, 0, 12, 31, $jahr);
+	// Hier weitere Feiertage (Geburtstage etc.) eintragen
+
+	// Zeitumstellung
+			$ftag["Sommerzeit! "] = strtotime('-1 week sun april' . $jahr);
+			$ftag["Normalzeit! "] = strtotime('-1 week sun november' . $jahr);
+
+	// Muttertag berechnen
+			$ftag["Muttertag"] = mktime(0, 0, 0, 5, (14 - date("w", mktime(0, 0, 0, 5, 0, $jahr))), $jahr);
+
+	// Ostersonntag berechnen
+			$ostern = strtotime("+ " . (easter_days($jahr)) . " days", mktime(0, 0, 0, 3, 21, $jahr));
+
+	// Die beweglichen Feiertage, abhängig vom Ostersonntag
+			/*$ftag["Rosenmontag"] = strtotime("-48 day", $ostern);*/
+			/*$ftag["Faschingsdienstag (Fastnacht)"] = strtotime("-47 day", $ostern);*/
+			/*$ftag["Aschermittwoch"] = strtotime("-46 day", $ostern);*/
+			/*$ftag["Palmsonntag"] = strtotime("-7 day", $ostern);*/
+			$ftag["Karfreitag"] = strtotime("-2 day", $ostern);
+			/*$ftag["Ostersonntag"] = strtotime("0 day", $ostern);*/
+			$ftag["Ostermontag"] = strtotime("+1 day", $ostern);
+			/*$ftag["Weißer Sonntag"] = strtotime("+7 day", $ostern);*/
+			$ftag["Ch. Himmelfahrt, Vatertag"] = strtotime("+39 day", $ostern);
+			/*$ftag["Pfingstsonntag"] = strtotime("+49 day", $ostern);*/
+			$ftag["Pfingstmontag"] = strtotime("+50 day", $ostern);
+			/*$ftag["Fronleichnam"] = strtotime("+60 day", $ostern);*/
+
+	// Erster Advent berechnen
+			$advent = strtotime("+1 sunday",mktime(0,0,0,11,27,$jahr));
+
+	// Die beweglichen Feiertage, abhängig vom ersten Advent
+			/*$ftag["1. Advent "] = strtotime("+0 day", $advent);
+			$ftag["2. Advent "] = strtotime("+7 day", $advent);
+			$ftag["3. Advent "] = strtotime("+14 day", $advent);
+			$ftag["4. Advent "] = strtotime("+21 day", $advent);*/
+			$ftag["Buß- und Bettag "] = strtotime("-11 day", $advent);
+			/*$ftag["Totensonntag "] = strtotime("last sunday", $advent);
+			$ftag["Volkstrauertag "] = strtotime("-14 day", $advent);*/
+
+		asort($ftag);
+		return $ftag;
+		}
+
+		$jahr = date("Y");
+		$monat = date("m");
+		$tag = date("d");
+		$feiertage = "";
+		$monatslaenge = date("t", mktime(0, 0, 0, $monat, 1, $jahr));
+		$feiertage .= feiertag($tag, $monat, $jahr);
+			
+		// Aktuelle Zeit an die Variable stunde_jetzt übergeben
+		
+		$stunde_jetzt = wp_date( 'H:i', current_time( 'timestamp', 1 ) );
+		
+		
+		echo 'Öffnungszeiten: ';
+		echo '<table border="2">';
+			echo '<tr><th width=100></th><th width=200>Vormittags</th><th width=200>Nachmittags</th></tr>';
+	
+			// sind Öffnungszeiten vorhanden?
+			
+			if ( have_rows( 'oeffnungszeiten' ) ) :
+				while ( have_rows( 'oeffnungszeiten' ) ) : the_row();
+					$von1[] = get_sub_field("vorvon");
+					$bis1[] = get_sub_field("vorbis");
+					$von2[] = get_sub_field("navon");
+					$bis2[] = get_sub_field("nabis");
+					
+				endwhile;
+				
+				
+				
+				for ($i = 0, $n = count($von1); $i < $n; $i++) {
+				
+				// Zeit -30 Minuten vor Schließung errechnen / voges = Uhrzeit vormittags geschlossen / nages = Uhrzeit nachmittags geschlossen
+				
+				$vorges[$i] = $bis1[$i];
+				$warnung1[$i] = date("H:i", strtotime($vorges[$i]) - (30*60));
+				$nages[$i] = $bis2[$i];
+				$warnung2[$i] = date("H:i", strtotime($nages[$i]) - (30*60));
+				
+				
+				// Prüfen ob zur Zeit geöffnet ist. Wenn ja, Ausgabe von 'Zur Zeit geöffnet'. Ansonsten die else-Schleifen durchlaufen.
+	 
+					if (($stunde_jetzt >= $von1[$i] && $stunde_jetzt <= $bis1[$i] OR $stunde_jetzt >= $von1[$i] && $stunde_jetzt <= $bis2[$i] OR $stunde_jetzt >= $von2[$i] & stunde_jetzt <= $bis2[$i]) && ($i == $momentanerWochentag - 1)) {
+						echo '<tr bgcolor="#ddd"><td align="left">' . $wochentage[$i] . '</td><td align="center" colspan="2">Zur Zeit geöffnet</td></tr>';
+					}
+					
+					// Ab 30  Minuten vor der Schließungszeit ausgeben, das gleich geschlossen wird.
+					
+					/*if (($stunde_jetzt >= $warnung1[$i] && $stunde_jetzt <= warnung1[$i] OR $stunde_jetzt >= $warnung2[$i] && $stunde_jetzt <= $warnung2[$i]) && ($i == $momentanerWochentag - 1)) {
+						echo '<tr bgcolor="#ddd"><td align="left">  </td><td align="center" colspan="2">Schließt aber in weniger als 30 Minuten</td></tr>';
+					}*/
+	 
+					// Geöffnet mit Mittagspause
+					
+					elseif (!empty($von1[$i]) && (!empty($bis1[$i]) && (!empty($von2[$i])) && (!empty($bis2[$i]))) && ($i == $momentanerWochentag - 1)) {
+						echo '<tr bgcolor="#ddd"><td align="left">' . $wochentage[$i] . '</td><td align="center"> ' . $von1[$i] . ' - ' . $bis1[$i] . '</td><td align="center"> ' . $von2[$i] . ' - ' . $bis2[$i] .'</td></tr>			';
+					} elseif (!empty($von1[$i]) && (!empty($bis1[$i]) && (!empty($von2[$i])) && (!empty($bis2[$i])))) {
+						echo '<tr><td align="left">' . $wochentage[$i] . '</td><td align="center"> ' . $von1[$i] . ' - ' . $bis1[$i] . '</td><td align="center"> ' . $von2[$i] . ' - ' . $bis2[$i] .'</td></tr>';
+					} elseif (($feiertage != $feiertage) && ($i == $momentanerWochentag - 1)){
+							echo '<tr bgcolor="#ddd"><td align="left">' . $wochentage[$i] . '</td><td align="center" colspan="2">aufgrund ' . $feiertage . ' geschlossen</td></tr>';
+					} 
+		
+					// Vormittags geöffnet
+					
+					elseif (!empty($von1[$i]) && (!empty($bis1[$i])) && (empty($von2[$i])) && (empty($bis2[$i])) && ($i == $momentanerWochentag - 1)) {
+						echo '<tr bgcolor="#ddd"><td align="left">' . $wochentage[$i] . '</td><td align="center"> ' . $von1[$i] . ' - ' . $bis1[$i] . '</td><td align="center"> ' . $oeffnungszeiten[0] . '</td></tr>';
+					} elseif (!empty($von1[$i]) && (!empty($bis1[$i])) && (empty($von2[$i])) && (empty($bis2[$i]))) {
+						echo '<tr><td align="left">' . $wochentage[$i] . '</td><td align="center"> ' . $von1[$i] . ' - ' . $bis1[$i] . '</td><td align="center"> ' . $oeffnungszeiten[0] . '</td></tr>';
+					} elseif (($feiertage != $feiertage) && ($i == $momentanerWochentag - 1)){
+							echo '<tr bgcolor="#ddd"><td align="left">' . $wochentage[$i] . '</td><td align="center" colspan="2">aufgrund ' . $feiertage . ' geschlossen</td></tr>';
+					}
+
+					// Nachmittags geöffnet
+					
+					elseif (empty($von1[$i]) && (empty($bis1[$i])) && (!empty($von2[$i])) && (!empty($bis2[$i])) && ($i == $momentanerWochentag - 1)) {
+						echo '<tr bgcolor="#ddd"><td align="left">' . $wochentage[$i] . '</td><td align="center">' . $oeffnungszeiten[0] . '</td><td align="center">' . $von2[$i] . ' - ' . $bis2[$i] . '</td></tr>';
+					} elseif (empty($von1[$i]) && (empty($bis1[$i])) && (!empty($von2[$i])) && (!empty($bis2[$i]))) {
+						echo '<tr><td align="left">' . $wochentage[$i] . '</td><td align="center">' . $oeffnungszeiten[0] . '</td><td align="center">' . $von2[$i] . ' - ' . $bis2[$i] . '</td></tr>';
+					} elseif (($feiertage != $feiertage) && ($i == $momentanerWochentag - 1)){
+							echo '<tr bgcolor="#ddd"><td align="left">' . $wochentage[$i] . '</td><td align="center" colspan="2">aufgrund ' . $feiertage . ' geschlossen</td></tr>';
+					}
+					
+					// Durchgehend geöffnet
+					
+					elseif (!empty($von1[$i]) && (empty($bis1[$i])) && (empty($von2[$i])) && (!empty($bis2[$i])) && ($i == $momentanerWochentag - 1)) {
+						echo '<tr bgcolor="#ddd"><td align="left">' . $wochentage[$i] . '</td><td align="center" colspan="2">' . $von1[$i] . ' - ' . $bis2[$i] . '</td></tr>';
+					} elseif (!empty($von1[$i]) && (empty($bis1[$i])) && (empty($von2[$i])) && (!empty($bis2[$i]))) {
+						echo '<tr><td align="left">' . $wochentage[$i] . '</td><td align="center" colspan="2">' . $von1[$i] . ' - ' . $bis2[$i] . '</td></tr>';
+					} elseif (($feiertage != $feiertage) && ($i == $momentanerWochentag - 1)){
+							echo '<tr bgcolor="#ddd"><td align="left">' . $wochentage[$i] . '</td><td align="center" colspan="2">aufgrund ' . $feiertage . ' geschlossen</td></tr>';
+					}
+										
+					// ganztags geschlossen
+										
+					elseif (empty($von1[$i]) && (empty($bis1[$i])) && (empty($von2[$i])) && (empty($bis2[$i])) && ($i == $momentanerWochentag - 1)) {
+						echo '<tr bgcolor="#ddd"><td align="left">' . $wochentage[$i] . '</td><td align="center" colspan="2">' . $oeffnungszeiten[1] . '</td></tr>';
+					} elseif (empty($von1[$i]) && (empty($bis1[$i])) && (empty($von2[$i])) && (empty($bis2[$i]))) {
+						echo '<tr><td align="left">' . $wochentage[$i] . '</td><td align="center" colspan="2">' . $oeffnungszeiten[1] . '</td></tr>';
+					}					
+				}		
+
+		echo '</table>';
+		
+			// Keine Öffnungszeiten eingetragen? Ausgabe von 'Keine Öffnungszeiten bekannt
+		
+				else : 
+				echo 'Keine Öffnungszeiten bekannt';
+			endif;
+		
+			// Aktuelle Info vorhanden? Ausgeben
+			
+			if (!empty($info[0])) {
+				echo '<br />';
+				echo '<hr />Aktuell: ' . $info[0] . '<br />';
+			}
+		
+			// Webseite eingetragen? Mit Linktitel ausgeben
+		
+			if (!empty($info[1])) {
+				echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="'  . $info[1] . '" title="' . $info[3] .'">' . $info[3] .'</a><br />';
+				echo '<br />';
+			}
+			
+			// Mailadresse für Terminbuchung vorhanden? Ausgeben mit Linktitel
+			
+			if (!empty($info[4])) {
+				echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="mailto:'  . $info[4] . '" title="' . $info[3] .'">' . $info[3] .'</a><br />';
+				echo '<br />';
+			}
+		
+			// Hinweise eingegeben? Ausgabe
+		
+			if (!empty($info[5])) {
+				echo '<br />Hinweis:<br />';
+				echo '<br />' . $info[5] . '<br /><br /><hr />';
+			}
+			
+			// Zuständigkeiten eingegeben? Anzeigen
+			
+			if (!empty($info[2])) {
+				echo '<br />Hier können Sie folgendes erledigen:<br />';
+				echo '<br />' . $info[2] . '<br /><hr />';
+			}
+			
+		// Zurück zur Übersicht der vorhandenen Ämter und Behörden
+		
+		echo '<br />Zurück zur <a href="https://salzsau-panorama.de/oeffnungszeiten" title="Zurück zur Übersicht">Übersicht</a>';		
+		}
+}
