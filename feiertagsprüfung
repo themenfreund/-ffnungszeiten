@@ -1,0 +1,62 @@
+//Prüfen, ob heute ein Feiertag ist. Wenn ja, Ausgabe 'wegen Feiertag geschlossen'.
+					
+					if (($i == $momentanerWochentag - 1 ) && ($ftag == date('d.m.Y'))) {
+						echo '<tr bgcolor="#ddd"><td align="left">' . $wochentage[$i] . '</td><td align="center" colspan="2">Aufgrund ' . $feiertage . ' geschlossen</td></tr>';
+					}
+					
+				// Prüfen ob zur Zeit geöffnet ist. Wenn ja, Ausgabe von 'Zur Zeit geöffnet'. Ansonsten die else-Schleifen durchlaufen.
+					
+					if (($stunde_jetzt >= $von1[$i] && $stunde_jetzt <= $bis1[$i] OR $stunde_jetzt >= $von1[$i] && $stunde_jetzt <= $bis2[$i] OR $stunde_jetzt >= $von2[$i] & $stunde_jetzt <= $bis2[$i]) && ($i == $momentanerWochentag - 1)) {
+						echo '<tr bgcolor="#ddd"><td align="left">' . $wochentage[$i] . '</td><td align="center" colspan="2">Zur Zeit geöffnet</td></tr>';
+					}
+					
+				// Ab 30  Minuten vor der Schließungszeit ausgeben, das gleich geschlossen wird.
+					
+					if (($stunde_jetzt >= $warnung1[$i] && $stunde_jetzt <= $vorges[$i]) && ($i == $momentanerWochentag - 1)) {
+						echo '<tr bgcolor="#ddd"><td align="left">  </td><td align="center" colspan="2"><strong>Schließt jedoch in '. $mins1[$i] . ' Minuten </strong></td></tr>';
+					}
+					
+					if (($stunde_jetzt >= $warnung2[$i] && $stunde_jetzt <= $nages[$i]) && ($i == $momentanerWochentag - 1)) {
+						echo '<tr bgcolor="#ddd"><td align="left">  </td><td align="center" colspan="2"><strong>Schließt jedoch in '. $mins2[$i]  . ' Minuten </strong></td></tr>';
+					}
+					
+				// Geöffnet mit Mittagspause
+					
+					elseif (!empty($von1[$i]) && (!empty($bis1[$i]) && (!empty($von2[$i])) && (!empty($bis2[$i]))) && ($i == $momentanerWochentag - 1)) {
+						echo '<tr bgcolor="#ddd"><td align="left">'. $wochentage[$i] . '</td><td align="center"> ' . $von1[$i] . ' - ' . $bis1[$i] . '</td><td align="center"> ' . $von2[$i] . ' - ' . $bis2[$i] .'</td></tr>';
+					} elseif (!empty($von1[$i]) && (!empty($bis1[$i]) && (!empty($von2[$i])) && (!empty($bis2[$i])))) {
+						echo '<tr><td align="left">'. $wochentage[$i] . '</td><td align="center"> ' . $von1[$i] . ' - ' . $bis1[$i] . '</td><td align="center"> ' . $von2[$i] . ' - ' . $bis2[$i] .'</td></tr>';
+					}
+		
+				// Vormittags geöffnet
+					
+					elseif (!empty($von1[$i]) && (!empty($bis1[$i])) && (empty($von2[$i])) && (empty($bis2[$i])) && ($i == $momentanerWochentag - 1)) {
+						echo '<tr bgcolor="#ddd"><td align="left">'. $wochentage[$i] . '</td><td align="center"> ' . $von1[$i] . ' - ' . $bis1[$i] . '</td><td align="center"> ' . $oeffnungszeiten[0] . '</td></tr>';
+					} elseif (!empty($von1[$i]) && (!empty($bis1[$i])) && (empty($von2[$i])) && (empty($bis2[$i]))) {
+						echo '<tr><td align="left">'. $wochentage[$i] . '</td><td align="center"> ' . $von1[$i] . ' - ' . $bis1[$i] . '</td><td align="center"> ' . $oeffnungszeiten[0] . '</td></tr>';
+					} 
+
+				// Nachmittags geöffnet
+					
+					elseif (empty($von1[$i]) && (empty($bis1[$i])) && (!empty($von2[$i])) && (!empty($bis2[$i])) && ($i == $momentanerWochentag - 1)) {
+						echo '<tr bgcolor="#ddd"><td align="left">' . $wochentage[$i]  . '</td><td align="center">' . $oeffnungszeiten[0] . '</td><td align="center">' . $von2[$i] . ' - ' . $bis2[$i] . '</td></tr>';
+					} elseif (empty($von1[$i]) && (empty($bis1[$i])) && (!empty($von2[$i])) && (!empty($bis2[$i]))) {
+						echo '<tr><td align="left">' . $wochentage[$i]  . '</td><td align="center">' . $oeffnungszeiten[0] . '</td><td align="center">' . $von2[$i] . ' - ' . $bis2[$i] . '</td></tr>';
+					}
+					
+				// Durchgehend geöffnet
+					
+					elseif (!empty($von1[$i]) && (empty($bis1[$i])) && (empty($von2[$i])) && (!empty($bis2[$i])) && ($i == $momentanerWochentag - 1)) {
+						echo '<tr bgcolor="#ddd"><td align="left">' . $wochentage[$i]  . '</td><td align="center" colspan="2">' . $von1[$i] . ' - ' . $bis2[$i] . '</td></tr>';
+					} elseif (!empty($von1[$i]) && (empty($bis1[$i])) && (empty($von2[$i])) && (!empty($bis2[$i]))) {
+						echo '<tr><td align="left">' . $wochentage[$i]  . '</td><td align="center" colspan="2">' . $von1[$i] . ' - ' . $bis2[$i] . '</td></tr>';
+					}
+										
+					// ganztags geschlossen
+										
+					elseif (empty($von1[$i]) && (empty($bis1[$i])) && (empty($von2[$i])) && (empty($bis2[$i])) && ($i == $momentanerWochentag - 1)) {
+						echo '<tr bgcolor="#ddd"><td align="left">' . $wochentage[$i]  . '</td><td align="center" colspan="2">' . $oeffnungszeiten[1] . '</td></tr>';
+					} elseif (empty($von1[$i]) && (empty($bis1[$i])) && (empty($von2[$i])) && (empty($bis2[$i]))) {
+						echo '<tr><td align="left">' . $wochentage[$i]  . '</td><td align="center" colspan="2">' . $oeffnungszeiten[1] . '</td></tr>';
+					}					
+				}	
